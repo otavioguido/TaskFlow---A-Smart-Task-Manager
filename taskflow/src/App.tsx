@@ -3,12 +3,13 @@ import TaskInput from './components/TaskInput';
 import TaskList from './components/TaskList';
 import './App.css';
 import TaskFilter from './components/TaskFilter';
+import type { FilterType } from './components/TaskFilter';
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<
     { id: number; text: string; completed: boolean }[]
   >([]);
-  const [filter, setFilter] = useState<'All' | 'Completed' | 'Pending'>('All');
+  const [filter, setFilter] = useState<FilterType>('All');
 
 
   const addTask = (text: string) => {
