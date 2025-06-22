@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import TaskInput from './components/TaskInput';
+import TaskList from './components/TaskList';
+import './App.css';
+import TaskFilter from './components/TaskFilter';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [tasks, setTasks] = useState<
+    { id: number; text: string; completed: boolean }[]
+  >([]);
+  const [filter, setFilter] = useState<'All' | 'Completed' | 'Pending'>('All');
+
+
+  const addTask = (text: string) => {
+    setTasks([...tasks, { id: Date.now(), text, completed: false }]);
+  };
+
+  const toggleTask = (id: number) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === 'Completed') return task.completed;
+    if (filter === 'Pending') return !task.completed;
+    return true; // 'All'
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+      <div className="p-6 max-w-md w-full bg-white rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold mb-4 text-black">TaskFlow</h1>
+      <TaskInput onAddTask={addTask} />
+      <div className="flex flex-col items-center justify-center">
+        <TaskFilter currentFilter={filter} onFilterChange={setFilter} />
+        <TaskList tasks={filteredTasks} onToggleTask={toggleTask} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App
+export default App;
